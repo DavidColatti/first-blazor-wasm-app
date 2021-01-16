@@ -66,9 +66,21 @@ namespace FlappyBirdDemo.Web.Models
         void CheckForCollisions()
         {
             if (Bird.IsOnGround())
-            {
                 GameOver();
+
+            // 1. Check for a pipe in the middle
+            var centeredPipe = Pipes.FirstOrDefault(p => p.IsCentered());
+
+            // 2. If there is a pipe, check for collision with:
+            if (centeredPipe != null)
+            {
+                bool hasCollidedWithBottom = Bird.DistanceFromGround < centeredPipe.GapBottom - 150;
+                bool hasCollidedWithTop = Bird.DistanceFromGround + 45 > centeredPipe.GapTop - 150;
+
+                if (hasCollidedWithBottom || hasCollidedWithTop)
+                    GameOver();
             }
+            
         }
 
         void ManagePipes()
